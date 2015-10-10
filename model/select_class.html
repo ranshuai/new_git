@@ -1,0 +1,123 @@
+<!DOCUTYPE html>
+<html>
+    <head>
+        <title>选课模板</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="./base.css">
+        <style type="text/css" media="screen">
+            .classes_sel_sel{ margin: 200px auto; }    
+        </style>
+    </head>
+    <body style="text-align: center;">
+         <div class="classes_sel_sel">
+            <div class="sele_cont clearfix">
+                <div class="sele_c_tit">
+                    所选分类 &gt;
+                </div>
+                <ul class="sele_c_list">
+                    
+                </ul>
+
+            </div>
+                <div class="sele_list_warp">
+                <!-- <div class="sele_list no_border_t">
+                    <div class="sele_li_tit">课程类型</div>
+                    <ul class="sele_li_list">
+                        <li><a href="javascript:;" code="1">小学</a></li>
+                        <li><a href="javascript:;" code="2">小升初</a></li>
+                        <li><a href="javascript:;" code="3">初中</a></li>
+                        <li><a href="javascript:;" code="4">中考</a></li>
+                        <li><a href="javascript:;" code="5">高中</a></li>
+                        <li><a href="javascript:;" code="6">高考</a></li>
+                        
+                    </ul>
+                    
+                </div> -->
+                <!-- <div class="sele_list">
+                    <div class="sele_li_tit">年级</div>
+                    <ul class="sele_li_list">
+                        <li><a href="javascript:;" code="1001">一年级</a></li>
+                        <li><a href="javascript:;" code="1002">二年级</a></li>
+                        <li><a href="javascript:;" code="1003">三年级</a></li>
+                        <li><a href="javascript:;" code="1004">四年级</a></li>
+                        <li><a href="javascript:;" code="1005">五年级</a></li>
+                        <li><a href="javascript:;" code="1006">六年级</a></li>
+                        
+                        
+                    </ul>
+                    <div class="sel_more pr"><span class="" style="cursor: pointer;">更多</span></div>
+                </div> -->
+               <!--  <div class="sele_list">
+                    <div class="sele_li_tit">科目</div>
+                    <ul class="sele_li_list">
+                        <li><a href="javascript:;" code="10010">语文</a></li>
+                        <li><a href="javascript:;" code="10011">数学</a></li>
+                        <li><a href="javascript:;" code="10012">英语</a></li>
+                        <li><a href="javascript:;" code="10013">生物</a></li>
+                        <li><a href="javascript:;" code="10014">物理</a></li>
+                        <li><a href="javascript:;" code="10015">化学</a></li>
+                        <li><a href="javascript:;" code="10016">地理</a></li>
+                        <li><a href="javascript:;" code="10018">政治</a></li>
+                     </ul>
+                    <div class="sel_more pr"><span class="" style="cursor: pointer;">更多</span></div>
+                </div> -->
+               <!--  <div class="sele_list">
+                    <div class="sele_li_tit">教材版本</div>
+                    <ul class="sele_li_list">
+                        <li><a href="javascript:;" code="20601">人教版</a></li>
+                        <li><a href="javascript:;" code="20602">苏教版</a></li>
+                        <li><a href="javascript:;" code="20603">鲁教版</a></li>
+                        <li><a href="javascript:;" code="20604">北师大版</a></li>
+                        <li><a href="javascript:;" code="20605">冀教版</a></li>
+                        <li><a href="javascript:;" code="20606">鲁教版（旧）</a></li>
+                        <li><a href="javascript:;" code="20607">人教版（旧）</a></li>
+                        
+                  </ul>
+                    <div class="sel_more pr"><span style="cursor: pointer;">更多</span><i></i></div>
+                </div> -->
+            
+            </div>
+            </div>   
+            <!-- test -->
+           <!-- test -->
+            <script src="jquery-1.8.3.min.js"></script>
+           
+            <script>
+            
+                $().ready(function(){
+                    //alert(1);
+                    $.ajax({
+                        url:'a.js' ,
+                        method:'GET',
+                        dataType:'json',
+                        success:function(json){
+                            //console.log(json);
+                            SeleClass(json);
+                        },
+                        error:function(){
+                             alert('error');
+                         },
+                    });
+                    function SeleClass(json){
+                        var num = 0;
+                        $.each(json,function(index,value){
+                                num++;
+                              //  alert(num);
+                            $('<div class="sele_list"><div class="sele_li_tit">'+value.name+'</div><ul class="sele_li_list" id='+num+'></ul></div>').appendTo('.sele_list_warp');
+                              //console.log(typeof(value.value)); //得到的是一个对象
+                                        var _json = value.value;                                                                         
+                              for(var name in _json){
+                                   // console.log(_json[name]);
+                                   // alert(1);
+                                    $(' <li><a href="javascript:;">'+_json[name]+'</a></li>').appendTo('.sele_li_list[id='+num+']');
+                              }
+                              
+                        });
+                    }
+
+
+                });
+
+            </script>
+    </body>
+</html>

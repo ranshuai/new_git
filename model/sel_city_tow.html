@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>选择地区</title>
+        <style>
+            *{margin:0; padding:0; list-style: none; }
+            .border_bottom{ border-bottom: 0 !important; }
+            .hide{ display:none;}
+            /*选择省*/
+            .sel_province{width:150px; line-height: 24px; margin-left: 30px; float: left;}
+            .sel_province h4{ border: 1px solid red; height: 24px;padding-left: 6px; }
+            .sel_province .province_item_warp{ border: 1px solid #ccc; border-top:none;}
+            .sel_province .province_item_warp li{  border-bottom:1px dashed #333;}
+            /* 选择城市*/
+            .sel_city{width:150px; line-height: 24px; margin-left: 30px; float: left;}
+            .sel_city h4{ border: 1px solid red; height: 24px;padding-left: 6px; }
+            .sel_city .city_item_warp{ border: 1px solid #ccc; border-top:none;}
+            .sel_city .city_item_warp li{  border-bottom:1px dashed #333; }  
+            /*选择县*/
+           
+            .sel_county{width:150px; line-height: 24px; margin-left: 30px; float: left;}
+            .sel_county h4{ border: 1px solid red; height: 24px;padding-left: 6px; }
+            .sel_county .county_item_warp{ border: 1px solid #ccc; border-top:none;}
+            .sel_county .county_item_warp li{  border-bottom:1px dashed #333; }           
+        </style>
+    </head>
+    <body>
+    <!-- .sel_province 选择省 -->
+        <div class="sel_province">
+            <h4 class="province_tit">请选择省-市</h4>
+            <ul class="province_item_warp">
+                <!-- <li class="province_item">北京市</li>
+                <li class="province_item">河北省</li>
+                <li class="province_item border_bottom">天津市</li> -->
+            </ul>
+        </div>
+        <!-- 选择市 -->
+        <div class="sel_city">
+            <h4 class="city_tit">请选择城市</h4>
+            <ul class="city_item_warp">
+             <!--    <li class="city_item">北京市</li> -->
+            </ul>
+        </div>
+        <!--  选择县-->
+        <div class="sel_county">
+            <h4 class="county_tit">请选择县-区</h4>
+            <ul class="county_item_warp">
+                <!-- <li class="county_item">朝阳区</li>
+                <li class="county_item">东城区</li>
+                <li class="county_item">怀柔区</li> -->
+               </ul>
+        </div>
+
+        <script src="jquery-1.8.3.min.js"></script>
+        <script>
+        $().ready(function(){
+            $('.sel_province').on('click',function(){
+
+            var $this = $(this);
+                 if($this.find('.province_item_warp').children().length>0){
+
+                    $this.find('.province_item_warp').toggleClass('hide');
+                    $this.find('.province_item_warp').undelegate();
+                     $this.find('.province_item_warp').delegate('li','click',function(){
+
+                         $('.city_item_warp').removeClass('hide');
+                        $('.city_tit').text('请选择市');
+                            $('.city_item_warp').html('');
+                                var txt  = $(this).text();
+                                  $this.find('h4').text($(this).text());
+                                  $.ajax({
+                                        url:'city_tow.js',
+                                        method:'GET',
+                                        dataType:'json',
+                                        success:function(str){
+                                         createC(str);//创造市
+                                        },
+                                        error:function(){
+                                            alert('error');
+                                        }
+                                    }); 
+
+                                 function createC(str){
+                                 // alert(txt );
+                                   for (var i=0; i<str.c[txt].length; i++){
+                                       $('<li class="city_item">'+str.c[txt][i]+'</li>').appendTo('.city_item_warp');
+                                   }
+
+                             } 
+                          });
+                 }else{
+                       $.ajax({ 
+                                url:'city_tow.js',
+                                method:'GET',
+                                dataType:'json',                             
+                                success:function(str){
+                                    console.log( str);
+                                    createP(str);//创造省
+                                },
+                                error:function(){
+                                    alert('error');
+                                }
+                         }); 
+                        function createP(str){
+                          for (var i=0; i<str.p.length; i++){
+                                   $('<li class="province_item">'+str.p[i]+'</li>').appendTo('.province_item_warp');
+                               }
+                         }
+                         $this.find('.province_item_warp').undelegate();
+                         $this.find('.province_item_warp').delegate('li','click',function(){
+                           var txt  = $(this).text();
+
+                            $this.find('h4').text($(this).text());
+                             $this.find('.province_item_warp').addClass('hide'); 
+
+
+                             $.ajax({
+                                url:'city_tow.js',
+                                method:'GET',
+                                dataType:'json',
+                                success:function(str){
+                                    
+                                 createC(str);//创造市
+                                },
+                                error:function(){
+                                    alert('error');
+                                }
+                              }); 
+
+                            function createC(str){
+                                 // alert(txt );
+                                 $('.city_item_warp').text('');
+                                   for (var i=0; i<str.c[txt].length; i++){
+                                       $('<li class="city_item">'+str.c[txt][i]+'</li>').appendTo('.city_item_warp');
+                                   }
+                             }
+                              
+                            return false;
+                          });
+                        }
+
+                      $(document).click(function(){
+                            $('.province_item_warp').addClass('hide');
+                       });  
+                      return false;
+            });
+
+        /*选择城市*/
+        $('.city_item_warp').delegate('li','click',function(){
+            /*给title赋值*/
+            showTit($(this),'.sel_city','.city_tit');
+
+            var txtP = $('.province_tit').text();
+            var txtC = $('.city_tit').text();
+
+              $('.county_item_warp').removeClass('hide');
+              //alert(1);
+            $('.county_tit').text('请选择县-区');
+            // alert(txtC);
+            //  alert(txtP);
+             $.ajax({
+                    url:'city_tow.js',
+                    method:'GET',
+                    dataType:'json',
+                    success:function(str){
+                        
+                     createA(str);//创造区县
+                    },
+                    error:function(){
+                        alert('error');
+                    }
+             }); 
+
+             function createA(str){
+                       // alert(str.a['重庆市-重庆市'][0]);
+                        $('.county_item_warp').text('');;
+                       for (var i=0;i<str.a[txtP+'-'+txtC].length;i++){
+                        
+                            $('<li class="county_item">'+str.a[txtP+'-'+txtC][i]+'</li>').appendTo('.county_item_warp');
+                           // alert(i);
+                       }
+            }
+
+           
+        });
+        
+        /*选择区县*/
+        $('.county_item_warp').delegate('li','click',function(){
+             /*给title赋值*/
+            showTit($(this),'.sel_county','.county_tit');
+                
+                document.onclick = function(){
+                    $('.county_item_warp').addClass('hide');
+                     
+                };
+
+            return false
+        });
+
+        /*定义改变title*/
+        function showTit(obj,objPar,tit){
+                 obj.parents(objPar).find(tit).text(obj.text());
+                 //obj.parent('ul').text('');
+                 obj.parent('ul').addClass('hide');
+            }
+        /* 如果城市的内容为空点击时显示*/
+
+        $('.city_tit').click(function(){
+
+                
+            if($(this).parents('.sel_city').find('.city_item_warp').children().length<=0){
+                
+          alert('请选择省');
+            }else{
+                $('.city_item_warp').toggleClass('hide');
+            }
+
+            $(document).click(function(){
+                    $('.city_item_warp').addClass('hide');
+                });
+
+                return false;
+        });
+        $('.county_tit').click(function(){
+
+             if($(this).parents('.sel_county').find('.county_item_warp').children().length<=0){
+                  alert('请选择市');
+            }else{
+                $('.county_item_warp').toggleClass('hide');
+            }
+            return false;
+        });
+    });
+
+        </script>
+    </body>
+</html>
+
